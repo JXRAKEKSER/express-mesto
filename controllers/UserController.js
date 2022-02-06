@@ -38,13 +38,16 @@ const getUserById = async (req, res) => {
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
     console.log(e);
+    if (e.name === 'CastError') {
+      return res.status(400).json({ message: 'Неправильно передан id' });
+    }
     return res.status(500).json({ message: 'Ошибка на сервере' });
   }
 };
 
 const updateUser = async (req, res) => {
   try {
-    const updatedUser = await User.findOneAndUpdate({ _id: req.user.id }, req.body, {
+    const updatedUser = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
       new: true,
       runValidators: true,
     });
@@ -63,10 +66,13 @@ const updateUser = async (req, res) => {
 const updateAvatar = async (req, res) => {
   try {
     const { avatar } = req.body;
+    // Сейчас в модели нет валидации по полю аватар, валидация ссылки будет добавлена позже в виде регулярных выражений
+    // Условие ниже проверяет существует ли поле аватар в запросе и не является ли оно пустым
+    // Если проверка не пройдена - выбрасывается кастомная ошибка валидации
     if (!avatar) {
       throw new ValidationError('Отсутствует поле \'avatar\', либо оно пустое');
     }
-    const updatedAvatar = await User.findOneAndUpdate({ _id: req.user.id }, { avatar }, {
+    const updatedAvatar = await User.findOneAndUpdate({ _id: req.user._id }, { avatar }, {
       new: true,
     });
     if (updatedAvatar) {

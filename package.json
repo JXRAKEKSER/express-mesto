@@ -13,7 +13,7 @@
     "url": "git+https://github.com/JXRAKEKSER/express-mesto.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dmitriy Gorbatenko, gorbatenko-2000@bk.ru, проект, реализующий сейчас crud-методы и личные кабинеты пользователей в будущем",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/JXRAKEKSER/express-mesto/issues"

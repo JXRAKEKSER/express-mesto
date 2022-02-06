@@ -12,7 +12,7 @@ const CardSchema = new Schema({
     required: true,
   },
   owner: {
-    ref: 'User',
+    ref: 'user',
     type: Schema.Types.ObjectId,
     required: true,
   },

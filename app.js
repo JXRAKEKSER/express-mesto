@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const authMiddleWare = require('./middlewares/auth.middleware');
 
 const userRouter = require('./routes/user.router');
-const cardRouter = require('./routes/card.route');
+const cardRouter = require('./routes/card.router');
 
 const app = express();
 
@@ -14,6 +14,9 @@ app.use(authMiddleWare);
 
 app.use('/users', userRouter);
 app.use('/cards', cardRouter);
+app.use((req, res) => {
+  res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
+});
 
 const start = async () => {
   try {

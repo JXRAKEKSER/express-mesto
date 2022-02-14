@@ -1,35 +1,37 @@
+const bcrypt = require('bcrypt');
 const ValidationError = require('../errors/ValidationError');
 const User = require('../models/User');
+const { getToken } = require('../utils/authUtils');
 
-const createUser = async (req, res) => {
-  const { name, about, avatar } = req.body;
+const createUser = async (req, res, next) => {
+  const {
+    email,
+    password,
+  } = req.body;
   try {
-    await User.create({
-      name, about, avatar,
-    });
-    return res.status(201).json({ name, about, avatar });
+    await User.validateEmail(email);
+    const hashPassword = await bcrypt.hash(password, 7);
+    const user = await User.create({ email, password: hashPassword });
+    return res.status(201).json({ name: user.name, about: user.about, avatar: user.avatar });
   } catch (e) {
-    console.log(e);
-    if (e.name === 'ValidationError') {
-      return res.status(400).json({ message: e.message });
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    console.log(e, 'create catch');
+    next(e);
   }
 };
 
-const getUsers = async (req, res) => {
+const getUsers = async (req, res, next) => {
   try {
     const users = await User.find({});
     // В массив usersObjectForClient помещаются объекты пользователей очищенные от поля версии
     const usersObjectForClient = users.map((user) => ({ name: user.name, about: user.about, avatar: user.avatar }));
     return res.status(200).json({ users: usersObjectForClient });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    console.log(e, 'getUsers');
+    next(e);
   }
 };
 
-const getUserById = async (req, res) => {
+const getUserById = async (req, res, next) => {
   try {
     const user = await User.findOne({ _id: req.params.id });
     if (user) {
@@ -37,15 +39,12 @@ const getUserById = async (req, res) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
-    console.log(e);
-    if (e.name === 'CastError') {
-      return res.status(400).json({ message: 'Неправильно передан id' });
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    console.log(e, 'getUsersById');
+    next(e);
   }
 };
 
-const updateUser = async (req, res) => {
+const updateUser = async (req, res, next) => {
   try {
     const updatedUser = await User.findOneAndUpdate({ _id: req.user._id }, req.body, {
       new: true,
@@ -56,14 +55,12 @@ const updateUser = async (req, res) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
-    if (e.name === 'ValidationError') {
-      return res.status(400).json({ message: e.message });
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    console.log(e, 'updateUser');
+    next(e);
   }
 };
 
-const updateAvatar = async (req, res) => {
+const updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
     // Сейчас в модели нет валидации по полю аватар, валидация ссылки будет добавлена позже в виде регулярных выражений
@@ -80,18 +77,44 @@ const updateAvatar = async (req, res) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
+    console.log(e, 'updateAvatar');
+    next(e);
+  }
+};
+
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findUserByCredentials(email, password);
+    return res.status(200).json({ jwt: getToken({ _id: user._id }) });
+  } catch (e) {
+    console.log(e, 'login');
+    next(e);
+  }
+};
+
+const getMyProfile = async (req, res, next) => {
+  try {
+    const myProfile = await User.findOne({ _id: req.user._id });
+    return res.status(200).json({
+      _id: myProfile._id,
+      name: myProfile.name,
+      about: myProfile.about,
+      avatar: myProfile.avatar,
+      email: myProfile.email,
+    });
+  } catch (e) {
     console.log(e);
-    if (e instanceof ValidationError) {
-      return e.sendError(res);
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 
 module.exports = {
+  login,
   createUser,
   getUsers,
   getUserById,
   updateUser,
   updateAvatar,
+  getMyProfile,
 };

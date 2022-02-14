@@ -2,7 +2,7 @@ const NotFoundError = require('../errors/NotFoundError');
 
 const Card = require('../models/Card');
 
-const createCard = async (req, res) => {
+const createCard = async (req, res, next) => {
   try {
     const { name, link } = req.body;
 
@@ -16,14 +16,11 @@ const createCard = async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    if (e.name === 'ValidationError') {
-      return res.status(400).json({ message: e.message });
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 
-const getCards = async (req, res) => {
+const getCards = async (req, res, next) => {
   try {
     const cards = await Card.find({});
     const cardsForClient = cards.map((card) => ({
@@ -36,13 +33,13 @@ const getCards = async (req, res) => {
     return res.status(200).json({ cards: cardsForClient });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 
-const deleteCard = async (req, res) => {
+const deleteCard = async (req, res, next) => {
   try {
-    const deletedCard = await Card.findOneAndRemove({ _id: req.params.cardId }, {
+    const deletedCard = await Card.findOneAndRemove({ _id: req.params.cardId, owner: req.user._id }, {
       new: true,
       runValidators: true,
     });
@@ -52,14 +49,11 @@ const deleteCard = async (req, res) => {
     return res.status(404).json({ message: 'Карточка с таким id не найдена' });
   } catch (e) {
     console.log(e);
-    if (e.name === 'CastError') {
-      return res.status(400).json({ message: 'Неправильно передан id' });
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 
-const addLike = async (req, res) => {
+const addLike = async (req, res, next) => {
   try {
     const updatedCard = await Card.findOneAndUpdate(
       { _id: req.params.cardId },
@@ -82,17 +76,11 @@ const addLike = async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    if (e.name === 'CastError') {
-      return res.status(400).json({ message: 'Неправильно передан id' });
-    }
-    if (e instanceof NotFoundError) {
-      return e.send(res);
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 
-const deleteLike = async (req, res) => {
+const deleteLike = async (req, res, next) => {
   try {
     const updatedCard = await Card.findOneAndUpdate(
       { _id: req.params.cardId },
@@ -115,13 +103,7 @@ const deleteLike = async (req, res) => {
     });
   } catch (e) {
     console.log(e);
-    if (e.name === 'CastError') {
-      return res.status(400).json({ message: 'Неправильно передан id' });
-    }
-    if (e instanceof NotFoundError) {
-      return e.send(res);
-    }
-    return res.status(500).json({ message: 'Ошибка на сервере' });
+    next(e);
   }
 };
 

@@ -1,8 +1,8 @@
-class NotFoundError extends Error {
+class UnAuthorizedError extends Error {
   constructor(message) {
     super(message);
-    this.name = 'NotFoundError';
-    this.statusCode = 404;
+    this.statusCode = 401;
+    this.name = 'UnAuthorizedError';
   }
 
   sendError(res) {
@@ -10,4 +10,4 @@ class NotFoundError extends Error {
   }
 }
 
-module.exports = NotFoundError;
+module.exports = UnAuthorizedError;

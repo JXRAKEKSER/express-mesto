@@ -1,7 +1,7 @@
 {
   "name": "express-mesto",
   "version": "1.0.0",
-  "description": "## Директории",
+  "description": "Проект написан в учебных целях и является серверной частью проекта \"Место\", реализацию клиентской части проекта можно найти на этом же гитхаб аккаунте",
   "main": "app.js",
   "scripts": {
     "lint": "npx eslint .",
@@ -13,14 +13,13 @@
     "url": "git+https://github.com/JXRAKEKSER/express-mesto.git"
   },
   "keywords": [],
-  "author": "Dmitriy Gorbatenko, gorbatenko-2000@bk.ru, проект, реализующий сейчас crud-методы и личные кабинеты пользователей в будущем",
+  "author": "Dmitriy Gorbatenko, gorbatenko-2000@bk.ru",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/JXRAKEKSER/express-mesto/issues"
   },
   "homepage": "https://github.com/JXRAKEKSER/express-mesto#readme",
   "devDependencies": {
-    "babel-eslint": "^10.1.0",
     "eslint": "^8.9.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",

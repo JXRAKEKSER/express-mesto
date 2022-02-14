@@ -12,7 +12,9 @@ const UserSchema = new Schema({
     type: String, minlength: 2, maxlength: 30, default: 'Исследователь',
   },
   avatar: {
-    type: String, default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    type: String,
+    match: /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/, // eslint-disable-line no-useless-escape
+    default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   password: {
     type: String, required: true, select: false,

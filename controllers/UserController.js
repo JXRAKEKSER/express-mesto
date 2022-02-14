@@ -1,5 +1,4 @@
 const bcrypt = require('bcrypt');
-const ValidationError = require('../errors/ValidationError');
 const User = require('../models/User');
 const { getToken } = require('../utils/authUtils');
 
@@ -63,14 +62,9 @@ const updateUser = async (req, res, next) => {
 const updateAvatar = async (req, res, next) => {
   try {
     const { avatar } = req.body;
-    // Сейчас в модели нет валидации по полю аватар, валидация ссылки будет добавлена позже в виде регулярных выражений
-    // Условие ниже проверяет существует ли поле аватар в запросе и не является ли оно пустым
-    // Если проверка не пройдена - выбрасывается кастомная ошибка валидации
-    if (!avatar) {
-      throw new ValidationError('Отсутствует поле \'avatar\', либо оно пустое');
-    }
     const updatedAvatar = await User.findOneAndUpdate({ _id: req.user._id }, { avatar }, {
       new: true,
+      runValidators: true,
     });
     if (updatedAvatar) {
       return res.status(200).json({ avatar: updatedAvatar.avatar });

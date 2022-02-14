@@ -10,6 +10,7 @@ const CardSchema = new Schema({
   link: {
     type: String,
     required: true,
+    match: /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/, // eslint-disable-line no-useless-escape
   },
   owner: {
     ref: 'user',

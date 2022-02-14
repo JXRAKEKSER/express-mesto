@@ -17,10 +17,9 @@ const getUserByIdValidator = celebrate({
     id: Joi.string().alphanum().min(24),
   }),
 });
-const regexpLink = /https?:\/\/(www)?[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/; // eslint-disable-line no-useless-escape
 const updateAvatarValidator = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(regexpLink),
+    avatar: Joi.string().min(11),
   }),
 });
 const updateProfileValidator = celebrate({

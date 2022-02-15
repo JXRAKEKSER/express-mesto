@@ -13,7 +13,6 @@ const createUser = async (req, res, next) => {
     const user = await User.create({ email, password: hashPassword });
     return res.status(201).json({ name: user.name, about: user.about, avatar: user.avatar });
   } catch (e) {
-    console.log(e, 'create catch');
     next(e);
   }
 };
@@ -25,7 +24,6 @@ const getUsers = async (req, res, next) => {
     const usersObjectForClient = users.map((user) => ({ name: user.name, about: user.about, avatar: user.avatar }));
     return res.status(200).json({ users: usersObjectForClient });
   } catch (e) {
-    console.log(e, 'getUsers');
     next(e);
   }
 };
@@ -38,7 +36,6 @@ const getUserById = async (req, res, next) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
-    console.log(e, 'getUsersById');
     next(e);
   }
 };
@@ -54,7 +51,6 @@ const updateUser = async (req, res, next) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
-    console.log(e, 'updateUser');
     next(e);
   }
 };
@@ -71,7 +67,6 @@ const updateAvatar = async (req, res, next) => {
     }
     return res.status(404).json({ message: 'Пользователь не найден' });
   } catch (e) {
-    console.log(e, 'updateAvatar');
     next(e);
   }
 };
@@ -82,7 +77,6 @@ const login = async (req, res, next) => {
     const user = await User.findUserByCredentials(email, password);
     return res.status(200).json({ jwt: getToken({ _id: user._id }) });
   } catch (e) {
-    console.log(e, 'login');
     next(e);
   }
 };
@@ -98,7 +92,6 @@ const getMyProfile = async (req, res, next) => {
       email: myProfile.email,
     });
   } catch (e) {
-    console.log(e);
     next(e);
   }
 };

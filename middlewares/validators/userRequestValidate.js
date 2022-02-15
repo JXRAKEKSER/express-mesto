@@ -14,12 +14,13 @@ const loginUserValidator = celebrate({
 });
 const getUserByIdValidator = celebrate({
   params: Joi.object().keys({
-    id: Joi.string().alphanum().min(24),
+    id: Joi.string().alphanum().hex().min(24),
   }),
 });
+const regexpUrl = /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/; // eslint-disable-line
 const updateAvatarValidator = celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().min(11),
+    avatar: Joi.string().min(11).pattern(regexpUrl),
   }),
 });
 const updateProfileValidator = celebrate({

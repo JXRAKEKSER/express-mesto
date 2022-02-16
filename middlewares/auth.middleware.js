@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const UnAuthorizedError = require('../errors/UnAuthorizedError');
-
+const { JWT_SECRET } = require('../utils/authUtils');
 module.exports = (req, res, next) => {
   if (req.method !== 'OPTIONS') {
     try {
@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
       if (!token) {
         throw new UnAuthorizedError('Пользователь не авторизован');
       }
-      req.user = jwt.verify(token, process.env.JWT_SECRET);
+      req.user = jwt.verify(token, JWT_SECRET);
     } catch (error) {
       console.log(error);
       if (error.name === 'JsonWebTokenError' && error.message === 'invalid signature') {

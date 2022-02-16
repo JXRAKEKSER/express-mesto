@@ -17,7 +17,9 @@ const getUserByIdValidator = celebrate({
     id: Joi.string().alphanum().hex().min(24),
   }),
 });
-const regexpUrl = /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/; // eslint-disable-line
+const regexpUrl = /https?:\/\/(www.)?([\w\-]+\.{0,1}){1,32}\.[a-z]{2,}(?=\/)[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+#?$/; // eslint-disable-line
+// ссылка пройдет валидацию, если после домена и доменной зоны будет указан путь,
+// так как мы хотим добавлять именно путь до удаленного ресурса, а не просто домен сервера на котором ресурс находится
 const updateAvatarValidator = celebrate({
   body: Joi.object().keys({
     avatar: Joi.string().min(11).pattern(regexpUrl),

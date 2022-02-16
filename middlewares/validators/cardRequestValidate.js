@@ -1,6 +1,6 @@
 const { Joi, celebrate } = require('celebrate');
 
-const regexpUrl = /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/; // eslint-disable-line
+const regexpUrl = /https?:\/\/(www.)?([\w\-]+\.{0,1}){1,32}\.[a-z]{2,}(?=\/)[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+#?$/; // eslint-disable-line
 const createCardValidator = celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30).required(),

@@ -13,7 +13,7 @@ const UserSchema = new Schema({
   },
   avatar: {
     type: String,
-    match: /https?:\/\/(www)?[\w\-]+\.\w+[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+/, // eslint-disable-line no-useless-escape
+    match: /https?:\/\/(www.)?([\w\-]+\.{0,1}){1,32}\.[a-z]{2,}(?=\/)[\w\-\._~:\/\?#\[\]@!$&\'()\*+,;=]+#?$/, // eslint-disable-line
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
   },
   password: {
